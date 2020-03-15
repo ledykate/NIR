@@ -8,23 +8,25 @@ Created on Tue Mar  3 23:17:54 2020
 import random
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
+import numpy as np
 #русскоязычные подписи на графиках
 rcParams['font.family']='fantasy'
 rcParams['font.fantasy']='Times New Roman'
 
-N=10
-M=2000
+N=27
+M=250
 P=[]
 p=(1/N)/20
 P.append(p)
 T=[]
+Por=[]
 while p<=(1/N):
     p+=((1/N)/20)
     P.append(p)
 
 
 for i in range(len(P)):
-    #frem=[]
+    frem=[]
     Q=[]
     for j in range(M):
         slot=[0 for i in range(N)]  
@@ -36,13 +38,30 @@ for i in range(len(P)):
             Q[j]=Q[j-1]-1+sum(slot)
         else:
             Q[j]=sum(slot)
+        frem.append(slot)
     T.append((sum(Q)/len(Q))/P[i])
+    frem=np.array(frem)
+    s1=(np.sum(frem, axis = 0))
+    s1=s1.T
+    t=0
+    for m in range(len(s1)):
+        if s1[m]>1:
+            t+=s1[m]
+    Por.append(t/sum(s1))
+            
 
 fig = plt.figure()
 ax1 = fig.add_axes([0,1.2,1,1])
 ax1.grid(True, color = [0,0,0])
-#ax1.set_title('График ', fontsize = 18)
+ax1.set_title('Среднее время нахождения в буфере', fontsize = 18)
 ax1.plot(P, T, color='blue')
-#fig.savefig('gravic_fun.png', bbox_inches='tight')
+fig.savefig('gr1.png', bbox_inches='tight')
+
+fig1 = plt.figure()
+ax2 = fig1.add_axes([0,0,1,1])
+ax2.grid(True, color = [0,0,0])
+ax2.set_title('Вероятности порчи пакета', fontsize = 18)
+ax2.plot(P, Por, color='blue')
+fig.savefig('gr2.png', bbox_inches='tight')
 
 
