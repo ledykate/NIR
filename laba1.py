@@ -13,36 +13,38 @@ import numpy as np
 rcParams['font.family']='fantasy'
 rcParams['font.fantasy']='Times New Roman'
 
-N=27
-M=300
-P=[]
+N=27 #количество абонентов
+M=400#колисетво повторов
+P=[] #массив вероятностей 
+T=[] #массив со среднем временем прибывания в буфере
+Por=[] #массив с вероятностями порчи сообщения
+#формирования массива вероятностей
 p=(1/N)/15
 P.append(p)
-T=[]
-Por=[]
 while p<=(1/N):
     p+=((1/N)/15)
     P.append(p)
 
 for i in range(len(P)):
-    frem=[]
-    Q=[]
+    frem=[] #заявки "падающие" в один слот
+    Q=[] #количетсов заявок в системе
     for j in range(M):
         slot=[0 for i in range(N)]  
+        #заполнения слотов (заявки приходящие в систему)
         for k in range(N):
-            slot[k]=random.choices([1, 0], weights=[P[i],1-P[i]])[0]
-        Q.append(sum(slot))
+            slot[k]=random.choices([1,0], weights=[P[i],1-P[i]])[0]
+        Q.append(sum(slot)) #первый элемент массива
+        #заполнения массива
         if Q[j-1]>0:
             Q[j]=Q[j-1]-1+sum(slot)
         else:
             Q[j]=sum(slot)
         frem.append(slot)
+    s1=np.sum(frem, axis = 0) #сумма по столбцам
+    t=sum([i for i in s1 if i>1]) #количество заявок пришедших в слот >1
     T.append((sum(Q)/len(Q))/P[i])
-    frem=np.array(frem)
-    s1=np.sum(frem, axis = 0)
-    t=sum([i for i in s1 if i>1])
     Por.append(t/sum(s1))
-            
+#построение графиков
 fig = plt.figure()
 ax1 = fig.add_axes([0,1.2,1,1])
 ax1.grid(True, color = [0,0,0])
