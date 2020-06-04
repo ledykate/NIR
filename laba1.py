@@ -57,6 +57,6 @@ ax2 = fig1.add_axes([0,0,1,1])
 ax2.grid(True, color = [0,0,0])
 ax2.set_title('Вероятности порчи пакета', fontsize = 18)
 ax2.plot(P, Por, color='blue')
-fig.savefig('gr2.png', bbox_inches='tight')
+fig1.savefig('gr2.png', bbox_inches='tight')
 
 
